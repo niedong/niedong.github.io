@@ -1,0 +1,546 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/AzureDragon.png">
+  <link rel="icon" href="/img/AzureDragon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="教你如何在任何地方、任意网络访问自己的树莓派">
+  <meta name="author" content="niedong">
+  <meta name="keywords" content="">
+  <meta name="description" content="教你如何在任何地方、任意网络访问自己的树莓派">
+<meta property="og:type" content="article">
+<meta property="og:title" content="远程访问树莓派">
+<meta property="og:url" content="https://niedong.github.io/2021/11/25/%E8%BF%9C%E7%A8%8B%E8%AE%BF%E9%97%AE%E6%A0%91%E8%8E%93%E6%B4%BE/index.html">
+<meta property="og:site_name" content="Azure Dragon">
+<meta property="og:description" content="教你如何在任何地方、任意网络访问自己的树莓派">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-11-25T09:04:50.000Z">
+<meta property="article:modified_time" content="2021-11-28T14:11:26.013Z">
+<meta property="article:author" content="niedong">
+<meta property="article:tag" content="树莓派">
+<meta property="article:tag" content="教程">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary_large_image">
+  
+  <title>远程访问树莓派 - Azure Dragon</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"niedong.github.io","root":"/","version":"1.8.12","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 100vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Welcome</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/AzureDragon1920Black.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="远程访问树莓派">
+              
+                远程访问树莓派
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-11-25 17:04" pubdate>
+        2021年11月25日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      14 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="iconfont icon-arrowdown"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">远程访问树莓派</h1>
+            
+            <div class="markdown-body">
+              <h1 id="远程访问树莓派"><a href="#远程访问树莓派" class="headerlink" title="远程访问树莓派"></a>远程访问树莓派</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>第一次使用树莓派时，一般会配置两个东西：一个是ssh，一个是无线网络。配置好后，再用自己的电脑通过ssh连接树莓派就可以使用了。例如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; ssh pi@192.168.3.1<br>pi@192.168.3.1&#x27;s password:<br></code></pre></td></tr></table></figure>
+
+<p>在本例中，需要注意树莓派的IP地址为<em>192.168.3.1</em>，是一个本地IP地址。这意味着我的电脑只有在该局域网中才能访问树莓派，在其他网络中是不行的。例如，我的个人电脑和树莓派连上我家的WiFi，那么我可以使用我的电脑与树莓派建立ssh连接。</p>
+<pre><code class=" mermaid">graph LR;
+subgraph 我的家
+我家中的路由器--&gt;PI0(&quot;192.168.3.1（树莓派）&quot;)
+我家中的路由器--&gt;PC0(&quot;192.168.3.2（我的电脑）&quot;)
+我家中的路由器--&gt;OD0(...)
+end
+</code></pre>
+
+<p>当我周末去朋友家，想要用我的电脑访问树莓派时，以上方法便会失效，因为我的电脑和树莓派在不同的局域网中。</p>
+<pre><code class=" mermaid">graph LR;
+subgraph 我的家
+我家中的路由器--&gt;PI0(&quot;192.168.3.1（树莓派）&quot;)
+我家中的路由器--&gt;ND0(&quot;192.168.3.2（我家的设备，或者局域网中不存在该IP地址）&quot;)
+我家中的路由器--&gt;OD0(...)
+end
+subgraph 朋友家
+朋友家的路由器--&gt;ND1(&quot;192.168.3.1（朋友的设备，或者局域网中不存在该IP地址）&quot;)
+朋友家的路由器--&gt;PC0(&quot;192.168.3.2（我的电脑）&quot;)
+朋友家的路由器--&gt;OD1(...)
+end
+</code></pre>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; ssh pi@192.168.3.1<br>connect to host 192.168.3.1 port 22: Connection timed out<br></code></pre></td></tr></table></figure>
+
+<p>为了在任意地点访问树莓派，必须使用一个<strong>公网IP</strong>进行中转。简单点说，公网IP是互联网中那些<strong>真正</strong>具有互联网通信能力的IP地址。在上文例子中，<em>192.168.3.1</em>就不是一个这样的地址，因为当我处于其他的网络中时，我便无法与之通信。对于一个公网IP，我可以在任何地点、任何网络中与之通信。</p>
+<p>因此，为了在任意网络中访问树莓派，必须使用一个公网IP进行中转。我们把那些具有公网IP的电脑（机器）称为<strong>服务器</strong>。</p>
+<h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>工具准备：</p>
+<ul>
+<li>一台电脑</li>
+<li>树莓派</li>
+<li>服务器</li>
+<li><strong>frp（重量级）</strong></li>
+</ul>
+<h3 id="什么是frp"><a href="#什么是frp" class="headerlink" title="什么是frp"></a>什么是frp</h3><p>以下内容摘自frp的<a target="_blank" rel="noopener" href="https://github.com/fatedier/frp">GitHub仓库</a></p>
+<blockquote>
+<p>frp 是一个专注于内网穿透的高性能的反向代理应用，支持 TCP、UDP、HTTP、HTTPS 等多种协议。可以将内网服务以安全、便捷的方式通过具有公网 IP 节点的中转暴露到公网。</p>
+</blockquote>
+<p>借助frp，我们可以像访问公网IP那样访问在内网中的树莓派。</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>在frp的<a href="(https://github.com/fatedier/frp/releases/)">release页面</a>上可以找到最新的frp下载包。可以使用<code>arch</code>或<code>lscpu</code>命令来查看服务器或树莓派的<em>CPU架构</em>，下载对应的正确版本。</p>
+<p>这是我的服务器信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; arch<br>x86_64<br>&gt; lscpu<br>Architecture:        x86_64<br>CPU op-mode(s):      32-bit, 64-bit<br>Byte Order:          Little Endian<br>...<br>Model name:          AMD EPYC 7K62 48-Core Processor<br>...<br></code></pre></td></tr></table></figure>
+
+<p>因此我的服务器上需要下载<code>linux_amd64</code>的版本。</p>
+<p>这是我的树莓派信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; arch<br>armv7l<br>&gt; lscpu<br>Architecture:        armv7l<br>Byte Order:          Little Endian<br>...<br>Model name:          Cortex-A72<br>...<br></code></pre></td></tr></table></figure>
+
+<p>因此我的树莓派上需要下载<code>linux_arm</code>的版本。</p>
+<h3 id="配置和启动"><a href="#配置和启动" class="headerlink" title="配置和启动"></a>配置和启动</h3><p>解压后进入frp文件夹，查看内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; ls<br>frpc  frpc_full.ini  frpc.ini  frps  frps_full.ini  frps.ini  LICENSE  systemd<br></code></pre></td></tr></table></figure>
+
+<p>其中<code>frps</code>和<code>frpc</code>分别是frp的服务端和客户端。同理，<code>frps.ini</code>和<code>frpc.ini</code>分别是frp的服务端配置文件和客户端配置文件。初始时<code>frps.ini</code>的内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; cat frps.ini<br>[common]<br>bind_port = 7000<br></code></pre></td></tr></table></figure>
+
+<p>在服务器中启动<code>frps</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs txt">./frps -c frps.ini<br></code></pre></td></tr></table></figure>
+
+<p>在树莓派中启动<code>frpc</code>时，要先修改<code>frpc.ini</code>中的<code>server_addr</code>字段。初始时<code>frpc.ini</code>的内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; cat frpc.ini<br>[common]<br>server_addr = 127.0.0.1<br>server_port = 7000<br><br>[ssh]<br>type = tcp<br>local_ip = 127.0.0.1<br>local_port = 22<br>remote_port = 6000<br></code></pre></td></tr></table></figure>
+
+<p>修改<code>server_addr</code>字段为服务器的IP地址（假设服务器IP地址为<em>x.x.x.x</em>）。启动<code>frpc</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs txt">./frpc -c frpc.ini<br></code></pre></td></tr></table></figure>
+
+<p>查看双方的连接信息，如无报错则frp服务启动并连接成功。如果连接失败，一个可能的原因是服务器的防火墙阻止了frp的连接，此时可以到服务器的控制台查看和更改服务器的防火墙设置。</p>
+<h3 id="连接树莓派"><a href="#连接树莓派" class="headerlink" title="连接树莓派"></a>连接树莓派</h3><p>在电脑上通过ssh连接树莓派。这次不是选择树莓派的本地IP地址，而是选择服务器的IP地址，加上<code>frpc.ini</code>中配置的<code>remote_port</code>字段：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; ssh pi@x.x.x.x -p 6000<br>pi@x.x.x.x&#x27;s password:<br></code></pre></td></tr></table></figure>
+
+<p>这样，我们就可以在任何地方访问树莓派了。</p>
+<h3 id="设置frp系统服务"><a href="#设置frp系统服务" class="headerlink" title="设置frp系统服务"></a>设置frp系统服务</h3><p>现在，虽然能通过公网IP访问树莓派，但是当服务器或者树莓派重启后，frp也因为设备重启关闭了。为了解决这一问题，我们要让frp开机自启动。一个非常好的解决方法是使用frp文件夹中的<code>.service</code>文件，让frp成为系统服务的一部分。</p>
+<p>在上文中提到，frp的文件夹中有这些内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; ls<br>frpc  frpc_full.ini  frpc.ini  frps  frps_full.ini  frps.ini  LICENSE  systemd<br></code></pre></td></tr></table></figure>
+
+<p>进入<code>systemd</code>文件夹：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; cd systemd<br>&gt; ls<br>frpc.service  frpc@.service  frps.service  frps@.service<br></code></pre></td></tr></table></figure>
+
+<p>这里以服务器设置frp系统服务为例。查看<code>frps.service</code>的内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; cat frps.service<br>[Unit]<br>Description=Frp Server Service<br>After=network.target<br><br>[Service]<br>Type=simple<br>User=nobody<br>Restart=on-failure<br>RestartSec=5s<br>ExecStart=/usr/bin/frps -c /etc/frp/frps.ini<br>LimitNOFILE=1048576<br><br>[Install]<br>WantedBy=multi-user.target<br></code></pre></td></tr></table></figure>
+
+<h4 id="修改User选项"><a href="#修改User选项" class="headerlink" title="修改User选项"></a>修改User选项</h4><p>修改<code>User=nobody</code>为自己的用户名。当前用户名可以通过<code>whoami</code>命令查询。在本例中，假设我们的用户名是<code>root</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; whoami<br>root<br></code></pre></td></tr></table></figure>
+
+<p>因此，该行应为<code>User=root</code></p>
+<h4 id="复制frps-service"><a href="#复制frps-service" class="headerlink" title="复制frps.service"></a>复制frps.service</h4><p>将修改后的<code>frps.service</code>复制到<code>/usr/lib/systemd/system</code>目录下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; sudo cp frps.service /usr/lib/systemd/system<br></code></pre></td></tr></table></figure>
+
+<p>同时，注意到frp默认的系统服务启动方式是这样的：</p>
+<p><code>ExecStart=/usr/bin/frps -c /etc/frp/frps.ini</code></p>
+<p>此时<code>/usr/bin</code>文件夹中并没有frps，也不存在<code>/etc/frp</code>目录，因此我们的工作还未结束。</p>
+<h4 id="添加软链接"><a href="#添加软链接" class="headerlink" title="添加软链接"></a>添加软链接</h4><p>我们在<code>/usr/bin/</code>目录为frps创建软链接。建议以frps的<strong>绝对路径</strong>创建软链接：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; sudo ln -s FULL_PATH_TO_FRP_FOLDER/frps /usr/bin/frps<br></code></pre></td></tr></table></figure>
+
+<h4 id="复制frps-ini"><a href="#复制frps-ini" class="headerlink" title="复制frps.ini"></a>复制frps.ini</h4><p>在<code>/etc/</code>路径下创建<code>frp</code>目录，并将<code>frps.ini</code>复制到该目录下：：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; sudo mkdir /etc/frp<br>&gt; sudo cp PATH_TO_FRP_FOLDER/frps.ini /etc/frp<br></code></pre></td></tr></table></figure>
+
+<h4 id="启动frp系统服务"><a href="#启动frp系统服务" class="headerlink" title="启动frp系统服务"></a>启动frp系统服务</h4><p>一切准备完毕，可以开启frp系统服务了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; sudo systemctl start frps<br></code></pre></td></tr></table></figure>
+
+<p>查看frps服务状态：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; sudo systemctl status frps<br>● frps.service - Frp Server Service<br>   Loaded: loaded (/usr/lib/systemd/system/frps.service; enabled; vendor preset: disabled)<br>   Active: active (running) since Wed 2021-11-24 19:17:46 CST; 1s ago<br>   ...<br>   ...frps started successfully<br></code></pre></td></tr></table></figure>
+
+<p>如果状态信息中没有报错，且显示frps服务正在运行，说明启动成功。</p>
+<p>要停止frps服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; sudo systemctl stop frps<br></code></pre></td></tr></table></figure>
+
+<h4 id="开启frp系统服务自启动"><a href="#开启frp系统服务自启动" class="headerlink" title="开启frp系统服务自启动"></a>开启frp系统服务自启动</h4><p>打开frps服务自启动：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; sudo systemctl enable frps<br>Created symlink from /etc/systemd/system/multi-user.target.wants/frps.service to /usr/lib/systemd/system/frps.service.<br></code></pre></td></tr></table></figure>
+
+<p>服务器重启后，可以查询到frps的进程信息，说明frps已自启动：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; sudo reboot # 或者从服务器控制台重启<br>... # 连接服务器<br>&gt; ps -ef | grep frps<br>root         836       1  0 Nov24 ?        00:06:47 /usr/bin/frps -c /etc/frp/frps.ini<br>root     1200010 1199976  0 18:32 pts/4    00:00:00 grep --color=auto frps<br></code></pre></td></tr></table></figure>
+
+<p>要关闭 frps 服务自启动：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">&gt; sudo systemctl disable frps<br>Removed symlink /etc/systemd/system/multi-user.target.wants/frps.service.<br></code></pre></td></tr></table></figure>
+
+<p>在树莓派上也需要开启frp系统服务，操作流程大同小异，这里不再赘述。（全文完）</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%A0%91%E8%8E%93%E6%B4%BE/">树莓派</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%99%E7%A8%8B/">教程</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
